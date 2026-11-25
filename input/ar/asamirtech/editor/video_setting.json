@@ -1,0 +1,15 @@
+{
+  "target_width": 1080,
+  "target_height": 1920,
+
+  "contrast": 0.0,
+  "saturation": 0.0,
+  "brightness": 0.0,
+
+  "transition_duration": 0.8,
+
+  "fonts_dir": "input/media/fonts",
+  "font_size": 62,
+
+  "subtitle_position_ratio": 0.65
+}
