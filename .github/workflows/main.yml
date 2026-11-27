@@ -2,6 +2,9 @@ name: Run Main Automation
 
 on:
   workflow_dispatch:
+  schedule:
+    # الساعة 9:00 صباحاً بتوقيت مصر (UTC+2) = 07:00 UTC
+    - cron: "0 7 * * *"
 
 permissions:
   contents: write
@@ -43,6 +46,14 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          YT_CLIENT_SECRET_JSON_AR_ABDO_AI: ${{ secrets.YT_CLIENT_SECRET_JSON_AR_ABDO_AI }}
+          YT_CLIENT_SECRET_JSON_AR_ABDO_ECONOMY: ${{ secrets.YT_CLIENT_SECRET_JSON_AR_ABDO_ECONOMY }}
+          YT_CLIENT_SECRET_JSON_AR_AL_QESA: ${{ secrets.YT_CLIENT_SECRET_JSON_AR_AL_QESA }}
+          YT_CLIENT_SECRET_JSON_AR_ASAMIRTECH: ${{ secrets.YT_CLIENT_SECRET_JSON_AR_ASAMIRTECH }}
+          YT_TOKEN_AR_ABDO_AI: ${{ secrets.YT_TOKEN_AR_ABDO_AI }}
+          YT_TOKEN_AR_ABDO_ECONOMY: ${{ secrets.YT_TOKEN_AR_ABDO_ECONOMY }}
+          YT_TOKEN_AR_AL_QESA: ${{ secrets.YT_TOKEN_AR_AL_QESA }}
+          YT_TOKEN_AR_ASAMIRTECH: ${{ secrets.YT_TOKEN_AR_ASAMIRTECH }}
         run: python main.py
 
       - name: Commit and Push Input Changes

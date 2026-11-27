@@ -3,12 +3,14 @@ import json
 import time
 from functools import wraps
 from datetime import datetime
+from dotenv import load_dotenv
+
 
 # استيراد وحدات إعداد الشبكة والكوكيز
 from src.cookies_generator import update_cookies_sync
-from src.proxy_tester import test_and_sort_proxies
-from src.proxy_tester_yt_dlp import ProxyTester
 from src.proxy_scraper import scrape_free_proxies
+from src.yt_proxy_pipeline import filter_youtube_proxies
+
 
 # استيراد وحدات تحميل الملفات والترجمات
 from src.downloader import run_download
@@ -21,7 +23,6 @@ from src.ytchannelscraper import YouTubeChannelScraper
 from src.analyzer import process_text_files 
 from src.ffmpeg_analyzer import process_clipper_data 
 from src.markdown_clipper import process_markdown_clips 
-from src.clip_downloader import extract_clips_from_markdown 
 
 # استيراد وحدة التفريغ الصوتي (Groq)
 from src.groq_transcriber import transcribe_media_folder_groq
@@ -35,6 +36,7 @@ from src.editor.audio_mixer import process_audio_library
 # استيراد وحدات الجدولة والرفع النهائي على يوتيوب
 from src.add_time import add_datetime_to_txt_files
 
+from src.yt_upload import SecretCredentialsProvider, upload_videos_from_markdown
 
 # =========================================================================
 # نظام مراقبة الأداء وقياس الوقت (Performance Monitor)
@@ -154,19 +156,13 @@ def run_pipeline(channel: str):
     print(f"[*] Initializing network, cookies, and proxies...")
     update_cookies_sync()
     scrape_free_proxies()
-    test_and_sort_proxies()
 
-
-    tester = ProxyTester(
-        target_count=50,
-        max_workers=50,
-        timeout_seconds=5,
-        max_file_age_hours=3.5,
-        sample_bytes=3 * 1024 * 1024,
-        min_avg_kbps=600.0,
-        max_cv=1.15,
+    filter_youtube_proxies(
+        input_file="input/media/yt/proxies.txt",
+        output_file="input/media/yt/dl_proxies.txt", 
+        top_n=50,
+        cookies_file="input/media/yt/cookies/cookies.txt",
     )
-    tester.run()
 
     monitor.record_step("Step 2: Network & Proxies Setup", time.time() - t0)
 
@@ -337,6 +333,21 @@ def run_pipeline(channel: str):
         prompt_file_path=f"{input_base}/script_details/prompts/script_details.md",  
         output_dir=f"{output_base}/Final/",
         merge_files=True
+    )
+
+
+    safe_channel = channel.replace("/", "_").upper()
+    provider = SecretCredentialsProvider(
+        client_secret_env=f"YT_CLIENT_SECRET_JSON_{safe_channel}",
+        token_b64_env=f"YT_TOKEN_{safe_channel}",
+    )
+
+    upload_videos_from_markdown(
+        video_dir=f"{output_base}/Final",
+        metadata_md_path=f"{output_base}/Final/combined_output.md",
+        state_json=f"{output_base}/db/yt_upload/last_state.json",
+        creds_provider=provider,
+        channel_label=f"{channel}Channel",
     )
 
 

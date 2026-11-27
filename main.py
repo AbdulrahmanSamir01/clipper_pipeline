@@ -5,10 +5,9 @@ def main():
     # قائمة القنوات المفعلة تلقائياً
     channels = [
         "ar/asamirtech",
-        # "ar/al_qesa",
+        "ar/al_qesa",
         # "ar/abdo_ai",
         # "ar/abdo_economy",
-        # "ar/almowaten-abdo"
         ]
 
     # دعم اختيار قناة واحدة عبر ترويسة الأوامر (Command Line Argument)
