@@ -6,8 +6,8 @@ def main():
     channels = [
         "ar/asamirtech",
         "ar/al_qesa",
-        # "ar/abdo_ai",
-        # "ar/abdo_economy",
+        "ar/abdo_ai",
+        "ar/abdo_economy",
         ]
 
     # دعم اختيار قناة واحدة عبر ترويسة الأوامر (Command Line Argument)
